@@ -1,0 +1,12 @@
+{
+  "name": "MobileMemories",
+  "displayName": "MobileMemories",
+  "expo": {
+    "name": "MobileMemories",
+    "slug": "MobileMemories",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
