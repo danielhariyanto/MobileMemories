@@ -1,31 +1,17 @@
-import reducers from "../modules";
-import thunk from "redux-thunk";
-import { createStore, applyMiddleware, compose, combineReducers } from "redux";
+import React from 'react'
+import { render } from 'react-dom'
+import { Provider } from 'react-redux'
+import { createStore } from 'redux'
+import rootReducer from './reducers'
+import App from './components/App'
 
-let store = null;
-const reducer = combineReducers(reducers);
+const store = createStore(rootReducer)
 
-if (__DEV__) {
-  const devToolsEnhancer = require("remote-redux-devtools");
-  store = createStore(
-    reducer,
-    {},
-    compose(
-      applyMiddleware(thunk),
-      devToolsEnhancer.default({
-        realtime: true,
-        hostname: "localhost",
-        port: 8000,
-        suppressConnectErrors: false,
-      }),
-    ),
-  );
-} else {
-  store = createStore(
-    reducer,
-    {},
-    applyMiddleware(thunk),
-  );
-}
+render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('root')
+)
 
 export default store;

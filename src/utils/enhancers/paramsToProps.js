@@ -1,7 +1,7 @@
 import {
   withProps,
 } from 'recompose';
-import R from 'ramda';
+import * as R from 'ramda';
 
 const getParam = (props, paramName) => R.path(
   ['navigation', 'state', 'params', paramName],

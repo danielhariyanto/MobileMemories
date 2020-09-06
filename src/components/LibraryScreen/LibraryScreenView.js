@@ -5,11 +5,12 @@ import SegmentedControlTab from 'react-native-segmented-control-tab';
 import { getParamOr } from '../../utils/navHelpers';
 import { globalStyles, headerStyle } from '../../styles';
 import { MediaList, AudioPlayer } from '../../components';
-import { AudioItem } from './components';
+import { AudioItem, VideoItem } from './components';
 import s from './styles';
 
 const tabs = [
-  'Audio'
+  'Audio',
+  'Video',
 ];
 
 const LibraryScreenView = ({
@@ -26,7 +27,10 @@ const LibraryScreenView = ({
   onTogglePlaying,
   onCompleteSliding,
   onStartSliding,
-  showPlayer
+  showPlayer,
+  videoItems,
+  playVideo,
+  removeVideo,
 }) => (
   <View style={[globalStyles.fillAll, globalStyles.withWhiteBackground]}>
     <View style={s.container}>
@@ -56,6 +60,19 @@ const LibraryScreenView = ({
             />}
         </View>
       )}
+
+      {selectedTabIndex === 1 /* Video */ && (
+        <MediaList
+          items={videoItems}
+          onPress={playVideo}
+          noItemsTitle="There are no items yet"
+          noItemsCaption="Your recorded video will be appear here"
+          ListItem={VideoItem}
+          removeVideo={removeVideo}
+          rowDirection
+        />
+      )}
+
     </View>
   </View>
 );
@@ -74,7 +91,10 @@ LibraryScreenView.propTypes = {
   onTogglePlaying: T.func,
   onCompleteSliding: T.func,
   onStartSliding: T.func,
-  showPlayer: T.bool
+  showPlayer: T.bool,
+  videoItems: T.arrayOf(T.object),
+  playVideo: T.func,
+  removeVideo: T.func,
 };
 
 LibraryScreenView.navigationOptions = ({ navigation }) => ({
