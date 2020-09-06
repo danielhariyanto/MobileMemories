@@ -1,10 +1,12 @@
 {
   "name": "MobileMemories",
-  "displayName": "MobileMemories",
+  "displayName": "Mobile Memories",
+  "description": "App for Memory Management",
   "expo": {
     "name": "MobileMemories",
     "slug": "MobileMemories",
     "version": "1.0.0",
+    // "githubUrl": "^https://github/.com/danielhariyanto/MobileMemories",
     "assetBundlePatterns": [
       "**/*"
     ]
