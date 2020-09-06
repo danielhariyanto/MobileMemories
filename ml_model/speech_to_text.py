@@ -16,46 +16,26 @@ def sample_long_running_recognize(audio_file, printTranscript=False, printMetric
     metrics = {}
 
     client = speech_v1.SpeechClient()
+
     BUCKET = 'mobile_memory'
-
-    # Create a Cloud Storage client.
     google_client = storage.Client()
-
-    # Get the bucket that the file will be uploaded to.
     bucket = google_client.get_bucket(BUCKET)
 
-    # specify a filename
-    file_name = 'dementia/English/Kempler/0wav/d10.wav'
+    file_name = 'English/Kempler/0wav/d10.wav'
 
-    # read a blob
     blob = bucket.blob(file_name)
     file_as_string = blob.download_as_string()
-
-    # convert the string to bytes and then finally to audio samples as floats
-    # and the audio sample rate
     sampleRate, audio_data = wavfile.read(io.BytesIO(file_as_string))
 
-    # audio_file = 'gs://cloud-samples-data/speech/brooklyn_bridge.flac'
-
-    # When enabled, the first result returned by the API will include a list
-    # of words and the start and end time offsets (timestamps) for those words.
-    enable_word_time_offsets = True
-
-    # The language of the supplied audio
     language_code = "en-US"
     config = {
-        "enable_word_time_offsets": enable_word_time_offsets,
+        "enable_word_time_offsets": True,
         "language_code": language_code,
     }
     # "enable_speaker_diarization": enable_speaker_diarization,
     # "diarization_speaker_count": diarization_speaker_count,
 
-    # with io.open(audio_file, "rb") as f:
-    #     content = f.read()
-
-    # audio = {"content": content}
     audio = {"uri": audio_file}
-
     operation = client.long_running_recognize(config, audio)
 
     print(u"Waiting for operation to complete...")
@@ -105,13 +85,14 @@ def sample_long_running_recognize(audio_file, printTranscript=False, printMetric
             TLT += word_end_time - pause_start_time
             TPT += word_end_time - word_start_time
 
-            rmsE = np.sqrt(np.mean(np.square(cut)))
-            sum1_rmsE += speech_length
-            sum2_rmsE += speech_length ** 2
-
             if word_end_time - word_start_time > 0.01:
                 cut = audio_data[int(word_start_time*sampleRate):
                                     int(word_end_time*sampleRate)]
+
+                rmsE = np.sqrt(np.mean(np.square(cut)))
+                sum1_rmsE += speech_length
+                sum2_rmsE += speech_length ** 2
+
                 wavfile.write("cut_word.wav", sampleRate, cut)
                 p = pitch.find_pitch("./cut_word.wav")
                 sum1_pitch += p
