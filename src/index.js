@@ -10,7 +10,7 @@ import T from "prop-types";
 import { addNavigationHelpers } from "react-navigation";
 import { connect } from "react-redux";
 import Navigator from "./navigation/Navigator";
-import { Icon, RecordAudio } from "./components";
+import { Icon, RecordAudio, Library } from "./components";
 import { Feather } from "@expo/vector-icons";
 import { colors, dimensions } from "./styles";
 import { LayoutAnimation } from 'react-native';
@@ -29,9 +29,9 @@ const Index = () => {
     <Tab.Navigator>
       <Tab.Screen
         name="LibraryTab"
-        component={ RecordAudio }
+        component={ Library }
         options={{
-          tabBarLabel: "Library",
+          tabBarLabel: "Memory Bank",
           tabBarIcon: ({ focused }) => (
             <Icon
               size={28}
@@ -48,7 +48,7 @@ const Index = () => {
       />
       <Tab.Screen
         name="RecordAudioTab"
-        component={ HomeScreen }
+        component={ RecordAudio }
         options={{
           tabBarLabel: "Audio Recording",
           tabBarIcon: ({ focused }) => (
