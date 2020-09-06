@@ -1,26 +1,24 @@
-import { Audio } from "expo";
-import { connect } from "react-redux";
+import { Audio } from 'expo';
+import { connect } from 'react-redux';
 import {
   withHandlers,
   hoistStatics,
   compose,
   withStateHandlers,
-  lifecycle
-} from "recompose";
-import * as uuid from "uuid";
-import moment from "moment";
-import screens from "../../navigation/screens";
-import RecordAudioScreenView from "./RecordAudioScreenView";
+  lifecycle,
+} from 'recompose';
+import uuid from 'uuid';
+import moment from 'moment';
+import { audioOperations } from '../../modules/audio';
+import screens from '../../navigation/screens';
+import RecordAudioScreenView from './RecordAudioScreenView';
 
 const mapDispatchToProps = {
-  addAudio: audioUri => actions.addAudio(audioUri)
+  // addAudio: audioOperations.addAudio,
 };
 
 const enhancer = compose(
-  connect(
-    null,
-    mapDispatchToProps
-  ),
+  connect(null, mapDispatchToProps),
   withHandlers({
     setAudioMode: () => async ({ allowsRecordingIOS }) => {
       try {
@@ -29,32 +27,26 @@ const enhancer = compose(
           interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
           playsInSilentModeIOS: true,
           shouldDuckAndroid: true,
-          interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX
+          interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
         });
       } catch (error) {
-        console.log(error); // eslint-disable-line
+        console.log(error) // eslint-disable-line
       }
-    }
-  }),
-  withStateHandlers(
-    {
-      recording: null,
-      isRecording: false,
-      durationMillis: 0,
-      isDoneRecording: false,
-      fileUrl: null,
-      audioName: ""
     },
-    {
-      setState: () => obj => obj,
-      setAudioName: () => audioName => ({ audioName }),
-      recordingCallback: () => ({
-        durationMillis,
-        isRecording,
-        isDoneRecording
-      }) => ({ durationMillis, isRecording, isDoneRecording })
-    }
-  ),
+  }),
+  withStateHandlers({
+    recording: null,
+    isRecording: false,
+    durationMillis: 0,
+    isDoneRecording: false,
+    fileUrl: null,
+    audioName: '',
+  }, {
+    setState: () => obj => obj,
+    setAudioName: () => audioName => ({ audioName }),
+    recordingCallback: () => ({ durationMillis, isRecording, isDoneRecording }) =>
+      ({ durationMillis, isRecording, isDoneRecording }),
+  }),
   withHandlers({
     onStartRecording: props => async () => {
       try {
@@ -71,14 +63,12 @@ const enhancer = compose(
 
         props.setState({ fileUrl: null });
 
-        await recording.prepareToRecordAsync(
-          Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
-        );
+        await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
         await recording.startAsync();
 
         props.setState({ recording });
       } catch (error) {
-        console.log(error); // eslint-disable-line
+        console.log(error) // eslint-disable-line
       }
     },
 
@@ -116,13 +106,13 @@ const enhancer = compose(
           recordDate: moment().format(),
           title: props.audioName,
           audioUrl: props.fileUrl,
-          duration: props.durationMillis
+          duration: props.durationMillis,
         };
 
         props.addAudio(audioItem);
         props.setState({
-          audioName: "",
-          isDoneRecording: false
+          audioName: '',
+          isDoneRecording: false,
         });
 
         props.navigation.navigate(screens.LibraryTab);
@@ -130,18 +120,18 @@ const enhancer = compose(
     },
     onCancelSave: props => () => {
       props.setState({
-        audioName: "",
+        audioName: '',
         isDoneRecording: false,
-        fileUrl: null
+        fileUrl: null,
       });
-    }
+    },
   }),
   lifecycle({
     componentWillUnmount() {
       this.props.onCancelRecording();
       this.props.setState({ recording: null });
-    }
-  })
+    },
+  }),
 );
 
 export default hoistStatics(enhancer)(RecordAudioScreenView);

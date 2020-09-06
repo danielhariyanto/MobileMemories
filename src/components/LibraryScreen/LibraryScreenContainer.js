@@ -1,39 +1,3 @@
-import React from 'react';
-import styled from 'styled-components';
-import { connect } from 'react-redux';
-import { LayoutAnimation } from 'react-native';
-import { Audio } from 'expo';
-import {
-  compose,
-  hoistStatics,
-  withHandlers,
-  withState,
-  withPropsOnChange, withStateHandlers, lifecycle,
-} from 'recompose';
-import { audioSelectors, audioOperations } from '../../modules/audio';
-import LibraryScreenView from './LibraryScreenView';
-import { setParamsOnDidMount, withClassVariableHandlers } from '../../utils/enhancers';
-
-function LibraryScreen() {
-  return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>yoooo</Text>
-    </View>
-  );
-}
-
-const View = styled.View`
-  justify-content: center;
-  align-items: center;
-  flex: 1;
-`;
-
-const Text = styled.Text``;
-
-
-
-
-
 import { connect } from 'react-redux';
 import { LayoutAnimation } from 'react-native';
 import { Audio } from 'expo';
@@ -53,7 +17,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  removeAudio: audioId => actions.removeAudio(audioId)
+  // removeAudio: audioOperations.removeAudio
 };
 
 const enhancer = compose(
@@ -173,7 +137,14 @@ const enhancer = compose(
       props.onStop();
       LayoutAnimation.easeInEaseOut();
       props.removeAudio(audioId);
-    }
+    },
+    playVideo: props => (video) => {
+      props.navigation.navigate('PlayVideo', {
+        title: video.title,
+        remove: () => props.removeVideo(video.id),
+        videoUrl: video.videoUrl,
+      });
+    },
   }),
   withState('selectedTabIndex', 'changeTab', 0),
   withPropsOnChange(
@@ -197,6 +168,3 @@ const enhancer = compose(
 );
 
 export default hoistStatics(enhancer)(LibraryScreenView);
-
-
-export default LibraryScreen;

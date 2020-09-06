@@ -6,3 +6,5 @@ export { default as RootSpinner } from './RootSpinner';
 export { default as MediaList } from './MediaList';
 export { default as AudioPlayer } from './AudioPlayer';
 export { default as Slider } from './Slider';
+export { default as RecordAudio } from './RecordAudioScreen/';
+export { default as Library} from './LibraryScreen/';

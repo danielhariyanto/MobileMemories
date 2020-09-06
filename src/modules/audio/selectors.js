@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import R from 'ramda';
+import * as R from 'ramda';
 
 const getAllAudioIds = R.pathOr([], ['audio', 'audioItemsIds']);
 const getAllAudioEntities = R.pathOr({}, ['audio', 'audioItems']);
